@@ -6,3 +6,8 @@ to handle mouse, touch and possible other events.
 You will certainly need a large number of global variables to keep track of the current modes and states
 of the interaction.
 */
+targets = document.getElementsByClassName("target");
+
+targets.forEach((target) => {
+  console.log(target);
+});
