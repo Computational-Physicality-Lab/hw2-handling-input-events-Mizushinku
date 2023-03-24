@@ -26,3 +26,11 @@ body {
   background-color: red;
   box-sizing: border-box;
 }
+
+.dot {
+  position: absolute;
+  background-color: rgba(75, 212, 57, 0.932);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
