@@ -75,10 +75,10 @@ targets.forEach((target) => {
   target.addEventListener("pointerup", (e) => {
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
+    clearTimeout(longPressTimer);
     if (longPressTarget !== e.target) {
       longPressTarget = null;
     }
-    clearTimeout(longPressTimer);
 
     //TouchUp -> Click
     if (e.pointerType == "touch") {
@@ -95,6 +95,9 @@ targets.forEach((target) => {
   });
 
   target.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+  });
+  target.addEventListener("touchend", (e) => {
     e.preventDefault();
   });
 });
