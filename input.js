@@ -22,13 +22,24 @@ const workspace = document.getElementById("workspace");
 
 var isWsDown = false;
 
-workspace.addEventListener("pointerdown", () => {
+workspace.addEventListener("pointerdown", (e) => {
   console.log("WS Down");
   isWsDown = true;
+  if (followingTarget && e.pointerType == "touch") {
+    followingTarget.style.left = `${e.clientX}px`;
+    followingTarget.style.top = `${e.clientY}px`;
+  }
 });
-workspace.addEventListener("pointerup", () => {
+workspace.addEventListener("pointerup", (e) => {
   console.log("WS Up");
   longPressTarget = null;
+  if (followingTarget && e.pointerType == "touch") {
+    followingTarget.style.left = `${e.clientX}px`;
+    followingTarget.style.top = `${e.clientY}px`;
+  }
+  if (e.pointerType == "touch") {
+    // isWsDown = false;
+  }
 });
 workspace.addEventListener("click", (e) => {
   if (isWsDown) {
@@ -44,6 +55,9 @@ workspace.addEventListener("pointermove", (e) => {
   if (e.isPrimary && longPressTarget) {
     longPressTarget.style.left = `${e.clientX}px`;
     longPressTarget.style.top = `${e.clientY}px`;
+  } else if (followingTarget) {
+    followingTarget.style.left = `${e.clientX}px`;
+    followingTarget.style.top = `${e.clientY}px`;
   }
 });
 
@@ -51,9 +65,24 @@ workspace.addEventListener("pointermove", (e) => {
 const targets = document.querySelectorAll(".target");
 
 var focusedTarget = null;
-var duringFirstTap = false;
+
 var longPressTimer = null;
 var longPressTarget = null;
+var longPressLag = 700;
+
+var tapTimer = null;
+var isTap = false;
+var tapPos = {
+  posX: null,
+  posY: null,
+};
+var tapLag = 300;
+
+var doubleTapTimer = null;
+var duringFirstTap = false;
+var followingTarget = null;
+var doubleTapLag = 350;
+
 var backup = {
   top: null,
   left: null,
@@ -63,26 +92,38 @@ var backup = {
 
 targets.forEach((target) => {
   target.addEventListener("click", targetOnClick);
-  target.addEventListener("dblclick", (e) => {
-    console.log(`Double   Click, target = ${e.target.style.top}`);
-  });
+  target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
     e.stopPropagation();
     console.log(`Down, target = ${e.target.style.top}`);
-    longPressTimer = setTimeout(longPress.bind(e), 500);
+    if (e.pointerType == "touch") {
+      isTap = true;
+      tapPos.posX = e.pageX;
+      tapPos.posY = e.pageY;
+      tapTimer = setTimeout(() => {
+        isTap = false;
+      }, tapLag);
+    }
+    if (!followingTarget) {
+      longPressTimer = setTimeout(longPress.bind(e), longPressLag);
+    }
   });
   target.addEventListener("pointerup", (e) => {
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
     clearTimeout(longPressTimer);
-    if (longPressTarget !== e.target) {
+    if (longPressTarget !== e.target || e.pointerType == "touch") {
       longPressTarget = null;
     }
 
     //TouchUp -> Click
     if (e.pointerType == "touch") {
-      targetOnClick(e);
+      if (isTap && e.pageX == tapPos.posX && e.pageY == tapPos.posY) {
+        isTap = false;
+        clearTimeout(tapTimer);
+        targetOnClick(e);
+      }
     }
   });
 
@@ -102,12 +143,17 @@ targets.forEach((target) => {
   });
 });
 
+/******* Functions *******/
+
 function longPress() {
   let e = this; //long press event "e".
   console.log(`LP ${e.target.style.top}`);
+  clearTimeout(longPressTimer);
   longPressTarget = e.target;
   backup.top = e.target.style.top;
   backup.left = e.target.style.left;
+  backup.width = e.target.style.width;
+  backup.height = e.target.style.height;
 }
 
 function setFocus(ele) {
@@ -124,6 +170,36 @@ function targetOnClick(e) {
     longPressTarget = null;
     return;
   }
+  if (followingTarget) {
+    followingTarget = null;
+    return;
+  }
   console.log(`Click, target = ${e.target.style.top}`);
+  let isSameTarget = focusedTarget === e.target;
   setFocus(e.target);
+
+  //double tap
+  if (e.pointerType == "touch") {
+    if (duringFirstTap) {
+      clearTimeout(doubleTapTimer);
+      duringFirstTap = false;
+      if (isSameTarget) {
+        targetOnDoubleClick(e);
+      }
+    } else {
+      duringFirstTap = true;
+      doubleTapTimer = setTimeout(() => {
+        duringFirstTap = false;
+      }, doubleTapLag);
+    }
+  }
+}
+
+function targetOnDoubleClick(e) {
+  console.log(`Double Click, target : ${e.target.style.top}`);
+  followingTarget = e.target;
+  backup.top = e.target.style.top;
+  backup.left = e.target.style.left;
+  backup.width = e.target.style.width;
+  backup.height = e.target.style.height;
 }
