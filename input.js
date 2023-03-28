@@ -53,11 +53,16 @@ var isWsDown = false;
 
 workspace.addEventListener("pointerdown", (e) => {
   console.log("WS Down");
-  isWsDown = true;
   if (followingTarget && e.pointerType == "touch") {
-    followingTarget.style.left = `${e.clientX}px`;
-    followingTarget.style.top = `${e.clientY}px`;
+    if (e.isPrimary) {
+      followingTarget.style.left = `${e.clientX}px`;
+      followingTarget.style.top = `${e.clientY}px`;
+    } else {
+      abort();
+      return;
+    }
   }
+  isWsDown = true;
 });
 workspace.addEventListener("pointerup", (e) => {
   console.log("WS Up");
@@ -69,7 +74,7 @@ workspace.addEventListener("pointerup", (e) => {
   }
 });
 workspace.addEventListener("click", (e) => {
-  if (isWsDown) {
+  if (e.isPrimary && isWsDown) {
     console.log("WS Click");
     if (followingTarget) {
       followingTarget = null;
@@ -86,7 +91,7 @@ workspace.addEventListener("pointermove", (e) => {
     inLongPress = true;
     longPressTarget.style.left = `${e.clientX}px`;
     longPressTarget.style.top = `${e.clientY}px`;
-  } else if (followingTarget) {
+  } else if (e.isPrimary && followingTarget) {
     followingTarget.style.left = `${e.clientX}px`;
     followingTarget.style.top = `${e.clientY}px`;
   }
@@ -103,6 +108,7 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
+    console.log(`Down, ${e.pointerType}, ${e.isPrimary}`);
     if (followingTarget) {
       return;
     }
@@ -116,6 +122,7 @@ targets.forEach((target) => {
   });
 
   target.addEventListener("pointerup", (e) => {
+    console.log(`Up, ${e.pointerType}, ${e.isPrimary}`);
     if (followingTarget) {
       return;
     }
@@ -166,15 +173,13 @@ function setFocus(ele) {
 }
 
 function targetOnClick(e) {
+  console.log(`Click, ${e.pointerType}, ${e.isPrimary}`);
   if (followingTarget || isAborted) {
     isAborted = false;
     return;
   }
 
   e.stopPropagation();
-  if (!e.isPrimary) {
-    return;
-  }
   if (inLongPress || isAborted) {
     inLongPress = false;
     longPressTarget = null;
