@@ -102,7 +102,6 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    // Propagation to WS if in following mode and touch down
     if (followingTarget) {
       return;
     }
@@ -132,6 +131,10 @@ targets.forEach((target) => {
   });
   target.addEventListener("pointerout", (e) => {
     // console.log(`Out, target = ${e.target.style.top}`);
+  });
+
+  target.addEventListener("touchstart", (e) => {
+    console.log(e);
   });
 });
 
