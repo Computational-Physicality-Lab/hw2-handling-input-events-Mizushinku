@@ -145,7 +145,9 @@ targets.forEach((target) => {
     checkToScalingMode(e);
 
     if (!e.isPrimary) {
-      abort();
+      if (!isScaling) {
+        abort();
+      }
       return;
     }
     longPress(e);
