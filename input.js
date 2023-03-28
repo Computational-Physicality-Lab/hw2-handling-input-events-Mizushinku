@@ -49,8 +49,10 @@ workspace.addEventListener("pointerdown", (e) => {
   console.log("WS Down");
   if (followingTarget && e.pointerType == "touch") {
     if (e.isPrimary) {
-      followingTarget.style.left = `${e.clientX}px`;
-      followingTarget.style.top = `${e.clientY}px`;
+      const [x, y] = checkPos(workspace, followingTarget, e);
+      console.log(x, y);
+      followingTarget.style.left = `${x}px`;
+      followingTarget.style.top = `${y}px`;
     } else {
       abort();
       return;
@@ -67,8 +69,9 @@ workspace.addEventListener("pointerup", (e) => {
   longPressTarget = null;
   isAborted = false;
   if (followingTarget && e.pointerType == "touch") {
-    followingTarget.style.left = `${e.clientX}px`;
-    followingTarget.style.top = `${e.clientY}px`;
+    const [x, y] = checkPos(workspace, followingTarget, e);
+    followingTarget.style.left = `${x}px`;
+    followingTarget.style.top = `${y}px`;
   }
 });
 workspace.addEventListener("click", (e) => {
@@ -82,17 +85,19 @@ workspace.addEventListener("click", (e) => {
       focusedTarget = null;
     }
     isWsDown = false;
+    console.log(`${e.clientX}, ${e.clientY}`);
   }
 });
 workspace.addEventListener("pointermove", (e) => {
   if (e.isPrimary && longPressTarget) {
     inLongPress = true;
-    const [x, y] = checkPos(workspace, e.target, e);
+    const [x, y] = checkPos(workspace, longPressTarget, e);
     longPressTarget.style.left = `${x}px`;
     longPressTarget.style.top = `${y}px`;
   } else if (e.isPrimary && followingTarget) {
-    followingTarget.style.left = `${e.clientX}px`;
-    followingTarget.style.top = `${e.clientY}px`;
+    const [x, y] = checkPos(workspace, followingTarget, e);
+    followingTarget.style.left = `${x}px`;
+    followingTarget.style.top = `${y}px`;
   }
 });
 
@@ -100,8 +105,8 @@ function checkPos(parent, child, e) {
   const parentRect = parent.getBoundingClientRect();
   const childRect = child.getBoundingClientRect();
 
-  let x = e.clientX;
-  let y = e.clientY;
+  let x = e.clientX - childRect.width / 2;
+  let y = e.clientY - childRect.height / 2;
 
   x = Math.max(
     parentRect.left,
@@ -111,6 +116,8 @@ function checkPos(parent, child, e) {
     parentRect.top,
     Math.min(parentRect.bottom - childRect.height, y)
   );
+  x += childRect.width / 2;
+  y += childRect.height / 2;
 
   return [x, y];
 }
@@ -126,7 +133,6 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    console.log(`Down, ${e.pointerType}, ${e.isPrimary}`);
     if (followingTarget) {
       return;
     }
@@ -140,7 +146,6 @@ targets.forEach((target) => {
   });
 
   target.addEventListener("pointerup", (e) => {
-    console.log(`Up, ${e.pointerType}, ${e.isPrimary}`);
     if (followingTarget) {
       return;
     }
