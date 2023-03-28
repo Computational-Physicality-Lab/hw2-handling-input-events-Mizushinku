@@ -85,6 +85,9 @@ workspace.addEventListener("pointermove", (e) => {
     followingTarget.style.left = `${e.clientX}px`;
     followingTarget.style.top = `${e.clientY}px`;
   }
+  workspace.addEventListener("dblclick", () => {
+    console.log("WS Double Click");
+  });
 });
 
 /*********************************/
