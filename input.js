@@ -12,7 +12,6 @@ var focusedTarget = null;
 var longPressTimer = null;
 var longPressTarget = null;
 var longPressLag = 700;
-var isAborted = false;
 
 var tapPos = {
   posX: null,
@@ -30,6 +29,7 @@ var backup = {
   width: null,
   height: null,
 };
+var isAborted = false;
 
 window.oncontextmenu = (e) => {
   if (e.pointerType == "touch") {
@@ -39,18 +39,7 @@ window.oncontextmenu = (e) => {
 
 document.body.addEventListener("keydown", (e) => {
   if (e.key == "Escape") {
-    if (longPressTarget) {
-      longPressTarget.style.top = backup.top;
-      longPressTarget.style.left = backup.left;
-      longPressTarget = null;
-      isAborted = true;
-      console.log("Abort Long Press");
-    } else if (followingTarget) {
-      followingTarget.style.top = backup.top;
-      followingTarget.style.left = backup.left;
-      followingTarget = null;
-      console.log("Abort Following");
-    }
+    Abort();
   }
 });
 /***********************************/
@@ -72,6 +61,7 @@ workspace.addEventListener("pointerdown", (e) => {
 workspace.addEventListener("pointerup", (e) => {
   console.log("WS Up");
   longPressTarget = null;
+  isAborted = false;
   if (followingTarget && e.pointerType == "touch") {
     followingTarget.style.left = `${e.clientX}px`;
     followingTarget.style.top = `${e.clientY}px`;
@@ -108,8 +98,15 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    if (!(followingTarget && e.pointerType == "touch")) {
+    // Propagation to WS if in following mode and primary touch down
+    if (!(followingTarget && e.pointerType == "touch" && e.isPrimary)) {
       e.stopPropagation();
+    }
+    if (followingTarget && !e.isPrimary) {
+      console.log(`FLOW and NP Down : ${e}`);
+      Abort();
+      isAborted = true;
+      return;
     }
     console.log(`Down, target = ${e.target.style.top}`);
     if (!followingTarget) {
@@ -123,6 +120,7 @@ targets.forEach((target) => {
     clearTimeout(longPressTimer);
     if (longPressTarget !== e.target || e.pointerType == "touch") {
       longPressTarget = null;
+      isAborted = false;
     }
   });
 
@@ -135,7 +133,9 @@ targets.forEach((target) => {
   });
 });
 
+/*************************/
 /******* Functions *******/
+/*************************/
 
 function longPress() {
   let e = this; //long press event "e".
@@ -163,8 +163,9 @@ function targetOnClick(e) {
     isAborted = false;
     return;
   }
-  if (followingTarget) {
+  if (followingTarget || isAborted) {
     followingTarget = null;
+    isAborted = false;
     return;
   }
   console.log(`Click, target = ${e.target.style.top}`);
@@ -195,4 +196,19 @@ function targetOnDoubleClick(e) {
   backup.left = e.target.style.left;
   backup.width = e.target.style.width;
   backup.height = e.target.style.height;
+}
+
+function Abort() {
+  if (longPressTarget) {
+    longPressTarget.style.top = backup.top;
+    longPressTarget.style.left = backup.left;
+    longPressTarget = null;
+    isAborted = true;
+    console.log("Abort Long Press");
+  } else if (followingTarget) {
+    followingTarget.style.top = backup.top;
+    followingTarget.style.left = backup.left;
+    followingTarget = null;
+    console.log("Abort Following");
+  }
 }
