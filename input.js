@@ -265,17 +265,24 @@ function handleScaling(e) {
   if (curDiffX > curDiffY) {
     const s = Math.abs(curDiffX - prevDiffX);
     if (curDiffX > prevDiffX) {
-      console.log(focusedTarget.style.width + s);
-      focusedTarget.style.width = `${focusedTarget.style.width + s}px`;
+      focusedTarget.style.width = `${
+        parseInt(focusedTarget.style.width) + s
+      }px`;
     } else {
-      focusedTarget.style.width = `${focusedTarget.style.width - s}px`;
+      focusedTarget.style.width = `${
+        parseInt(focusedTarget.style.width) - s
+      }px`;
     }
   } else {
     const s = Math.abs(curDiffY - prevDiffY);
     if (curDiffY > prevDiffY) {
-      focusedTarget.style.height = `${focusedTarget.style.height + s}px`;
+      focusedTarget.style.height = `${
+        parseInt(focusedTarget.style.height) + s
+      }px`;
     } else {
-      focusedTarget.style.height = `${focusedTarget.style.height - s}px`;
+      focusedTarget.style.height = `${
+        parseInt(focusedTarget.style.height) - s
+      }px`;
     }
   }
   prevDiffX = curDiffX;
