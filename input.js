@@ -152,12 +152,12 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    ++touchCnt;
     if (followingTarget || isScaling) {
       return;
     }
     e.stopPropagation();
     console.log(`Down, target = ${e.target.style.top}`);
+    ++touchCnt;
     checkToScalingMode(e);
 
     if (!e.isPrimary) {
@@ -168,12 +168,12 @@ targets.forEach((target) => {
   });
 
   target.addEventListener("pointerup", (e) => {
-    --touchCnt;
     if (followingTarget || isScaling) {
       return;
     }
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
+    --touchCnt;
     if (!e.isPrimary) {
       return;
     }
