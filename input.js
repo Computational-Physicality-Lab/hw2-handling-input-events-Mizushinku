@@ -266,12 +266,13 @@ function handleScaling(e) {
     const s = Math.abs(curDiffX - prevDiffX);
     if (curDiffX > prevDiffX) {
       focusedTarget.style.width = `${
-        parseInt(focusedTarget.style.width) + 1
+        (parseInt(focusedTarget.style.width) + 1, 50)
       }px`;
     } else {
-      focusedTarget.style.width = `${
-        parseInt(focusedTarget.style.width) - 1
-      }px`;
+      focusedTarget.style.width = `${Math.max(
+        parseInt(focusedTarget.style.width) - 1,
+        50
+      )}px`;
     }
   } else {
     const s = Math.abs(curDiffY - prevDiffY);
@@ -280,9 +281,10 @@ function handleScaling(e) {
         parseInt(focusedTarget.style.height) + 1
       }px`;
     } else {
-      focusedTarget.style.height = `${
-        parseInt(focusedTarget.style.height) - 1
-      }px`;
+      focusedTarget.style.height = `${Math.max(
+        parseInt(focusedTarget.style.height) - 1,
+        50
+      )}px`;
     }
   }
   prevDiffX = curDiffX;
