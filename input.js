@@ -7,21 +7,56 @@ You will certainly need a large number of global variables to keep track of the 
 of the interaction.
 */
 
+var focusedTarget = null;
+
+var longPressTimer = null;
+var longPressTarget = null;
+var longPressLag = 700;
+var isAborted = false;
+
+var tapPos = {
+  posX: null,
+  posY: null,
+};
+
+var doubleTapTimer = null;
+var duringFirstTap = false;
+var followingTarget = null;
+var doubleTapLag = 350;
+
+var backup = {
+  top: null,
+  left: null,
+  width: null,
+  height: null,
+};
+
+window.oncontextmenu = (e) => {
+  if (e.pointerType == "touch") {
+    return false;
+  }
+};
+
 document.body.addEventListener("keydown", (e) => {
   if (e.key == "Escape") {
     if (longPressTarget) {
       longPressTarget.style.top = backup.top;
       longPressTarget.style.left = backup.left;
       longPressTarget = null;
+      isAborted = true;
+      console.log("Abort Long Press");
     } else if (followingTarget) {
       followingTarget.style.top = backup.top;
       followingTarget.style.left = backup.left;
       followingTarget = null;
+      console.log("Abort Following");
     }
   }
 });
-
+/***********************************/
 /******* WorkSpace Code Zone *******/
+/***********************************/
+
 const workspace = document.getElementById("workspace");
 
 var isWsDown = false;
@@ -40,9 +75,6 @@ workspace.addEventListener("pointerup", (e) => {
   if (followingTarget && e.pointerType == "touch") {
     followingTarget.style.left = `${e.clientX}px`;
     followingTarget.style.top = `${e.clientY}px`;
-  }
-  if (e.pointerType == "touch") {
-    // isWsDown = false;
   }
 });
 workspace.addEventListener("click", (e) => {
@@ -65,34 +97,11 @@ workspace.addEventListener("pointermove", (e) => {
   }
 });
 
+/*********************************/
 /******* Targets Code Zone *******/
+/*********************************/
+
 const targets = document.querySelectorAll(".target");
-
-var focusedTarget = null;
-
-var longPressTimer = null;
-var longPressTarget = null;
-var longPressLag = 700;
-
-var tapTimer = null;
-var isTap = false;
-var tapPos = {
-  posX: null,
-  posY: null,
-};
-var tapLag = 350;
-
-var doubleTapTimer = null;
-var duringFirstTap = false;
-var followingTarget = null;
-var doubleTapLag = 350;
-
-var backup = {
-  top: null,
-  left: null,
-  width: null,
-  height: null,
-};
 
 targets.forEach((target) => {
   target.addEventListener("click", targetOnClick);
@@ -103,37 +112,17 @@ targets.forEach((target) => {
       e.stopPropagation();
     }
     console.log(`Down, target = ${e.target.style.top}`);
-    if (e.pointerType == "touch") {
-      isTap = true;
-      tapPos.posX = e.pageX;
-      tapPos.posY = e.pageY;
-      tapTimer = setTimeout(() => {
-        isTap = false;
-      }, tapLag);
-    }
     if (!followingTarget) {
       longPressTimer = setTimeout(longPress.bind(e), longPressLag);
     }
   });
+
   target.addEventListener("pointerup", (e) => {
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
     clearTimeout(longPressTimer);
     if (longPressTarget !== e.target || e.pointerType == "touch") {
       longPressTarget = null;
-    }
-
-    //TouchUp -> Click
-    if (e.pointerType == "touch") {
-      if (
-        isTap &&
-        Math.abs(e.pageX - tapPos.posX) <= 30 &&
-        Math.abs(e.pageY - tapPos.posY) <= 30
-      ) {
-        isTap = false;
-        clearTimeout(tapTimer);
-        targetOnClick(e);
-      }
     }
   });
 
@@ -143,13 +132,6 @@ targets.forEach((target) => {
   target.addEventListener("pointerout", (e) => {
     // console.log(`Out, target = ${e.target.style.top}`);
     clearTimeout(longPressTimer);
-  });
-
-  target.addEventListener("touchstart", (e) => {
-    // e.preventDefault();
-  });
-  target.addEventListener("touchend", (e) => {
-    // e.preventDefault();
   });
 });
 
@@ -176,8 +158,9 @@ function setFocus(ele) {
 
 function targetOnClick(e) {
   e.stopPropagation();
-  if (longPressTarget) {
+  if (longPressTarget || isAborted) {
     longPressTarget = null;
+    isAborted = false;
     return;
   }
   if (followingTarget) {
