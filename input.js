@@ -50,6 +50,9 @@ const workspace = document.getElementById("workspace");
 
 var isWsDown = false;
 
+workspace.addEventListener("touchstart", (e) => {
+  console.log(e);
+});
 workspace.addEventListener("pointerdown", (e) => {
   console.log("WS Down");
   isWsDown = true;
@@ -89,9 +92,6 @@ workspace.addEventListener("pointermove", (e) => {
     followingTarget.style.left = `${e.clientX}px`;
     followingTarget.style.top = `${e.clientY}px`;
   }
-});
-workspace.addEventListener("touchstart", (e) => {
-  console.log(e);
 });
 
 /*********************************/
