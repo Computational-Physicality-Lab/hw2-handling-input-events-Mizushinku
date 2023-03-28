@@ -266,22 +266,22 @@ function handleScaling(e) {
     const s = Math.abs(curDiffX - prevDiffX);
     if (curDiffX > prevDiffX) {
       focusedTarget.style.width = `${
-        parseInt(focusedTarget.style.width) + s
+        parseInt(focusedTarget.style.width) + 1
       }px`;
     } else {
       focusedTarget.style.width = `${
-        parseInt(focusedTarget.style.width) - s
+        parseInt(focusedTarget.style.width) - 1
       }px`;
     }
   } else {
     const s = Math.abs(curDiffY - prevDiffY);
     if (curDiffY > prevDiffY) {
       focusedTarget.style.height = `${
-        parseInt(focusedTarget.style.height) + s
+        parseInt(focusedTarget.style.height) + 1
       }px`;
     } else {
       focusedTarget.style.height = `${
-        parseInt(focusedTarget.style.height) - s
+        parseInt(focusedTarget.style.height) - 1
       }px`;
     }
   }
