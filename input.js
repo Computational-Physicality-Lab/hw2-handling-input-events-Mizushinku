@@ -9,7 +9,6 @@ of the interaction.
 
 var focusedTarget = null;
 
-// var longPressTimer = null;
 var inLongPress = false;
 var longPressTarget = null;
 var longPressLag = 500;
@@ -108,15 +107,8 @@ targets.forEach((target) => {
       return;
     }
     e.stopPropagation();
-    // if (followingTarget && !e.isPrimary) {
-    //   console.log(`FLOW and NP Down : ${e}`);
-    //   Abort();
-    //   isAborted = true;
-    //   return;
-    // }
     console.log(`Down, target = ${e.target.style.top}`);
     longPress(e);
-    //   longPressTimer = setTimeout(longPress.bind(e), longPressLag);
   });
 
   target.addEventListener("pointerup", (e) => {
@@ -125,7 +117,6 @@ targets.forEach((target) => {
     }
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
-    // clearTimeout(longPressTimer);
     if (longPressTarget !== e.target || e.pointerType == "touch") {
       inLongPress = false;
       longPressTarget = null;
@@ -141,7 +132,6 @@ targets.forEach((target) => {
   });
   target.addEventListener("pointerout", (e) => {
     // console.log(`Out, target = ${e.target.style.top}`);
-    // clearTimeout(longPressTimer);
   });
 });
 
