@@ -67,7 +67,11 @@ workspace.addEventListener("pointerdown", (e) => {
     }
   }
   if (isScaling) {
-    console.log(touchCnt);
+    if (touchCnt == 2) {
+      anchor_2 = e;
+    } else if (touchCnt >= 3) {
+      abort();
+    }
   } else {
     checkToScalingMode(e);
   }
@@ -89,7 +93,11 @@ workspace.addEventListener("pointerup", (e) => {
     followingTarget.style.top = `${y}px`;
   }
   if (isScaling) {
-    console.log(touchCnt);
+    if (touchCnt == 0) {
+      abort();
+    } else if (touchCnt == 1 && e === anchor_1) {
+      anchor_1 = anchor_2;
+    }
   }
 });
 workspace.addEventListener("click", (e) => {
@@ -115,8 +123,12 @@ workspace.addEventListener("pointermove", (e) => {
     const [x, y] = checkPos(workspace, followingTarget, e);
     followingTarget.style.left = `${x}px`;
     followingTarget.style.top = `${y}px`;
-  } else if (isScaling) {
-    // console.log("Scaling!");
+  } else if (isScaling && touchCnt == 2) {
+    console.log(
+      "Scaling!",
+      `a1 : ${anchor_1.clientX}, ${anchor_1.clientY}`,
+      `a2 : ${anchor_2.clientX}, ${anchor_2.clientY}`
+    );
   }
 });
 
@@ -291,5 +303,8 @@ function abort() {
     followingTarget.style.left = backup.left;
     followingTarget = null;
     console.log("Abort Following");
+  } else if (isScaling) {
+    console("Abort Scaling");
+    isScaling;
   }
 }
