@@ -30,6 +30,7 @@ var backup = {
   height: null,
 };
 var isAborted = false;
+var evStack = [];
 
 window.oncontextmenu = (e) => {
   if (e.pointerType == "touch") {
@@ -39,7 +40,7 @@ window.oncontextmenu = (e) => {
 
 document.body.addEventListener("keydown", (e) => {
   if (e.key == "Escape") {
-    Abort();
+    abort();
   }
 });
 /***********************************/
@@ -50,11 +51,13 @@ const workspace = document.getElementById("workspace");
 
 var isWsDown = false;
 
-workspace.addEventListener("touchstart", (e) => {
-  console.log(e);
-});
 workspace.addEventListener("pointerdown", (e) => {
   console.log("WS Down");
+
+  console.log(
+    `Type : ${e.pointerType}, ID : ${e.pointerId}, isPri : ${e.isPrimary}`
+  );
+
   isWsDown = true;
   if (followingTarget && e.pointerType == "touch") {
     followingTarget.style.left = `${e.clientX}px`;
@@ -110,6 +113,12 @@ targets.forEach((target) => {
     }
     e.stopPropagation();
     console.log(`Down, target = ${e.target.style.top}`);
+    evStack.push(e);
+
+    if (evStack.length > 1) {
+      abort();
+      return;
+    }
     longPress(e);
   });
 
@@ -119,6 +128,10 @@ targets.forEach((target) => {
     }
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
+    if (evStack.length > 1) {
+      evStack.pop();
+      return;
+    }
     if (longPressTarget !== e.target || e.pointerType == "touch") {
       inLongPress = false;
       longPressTarget = null;
@@ -127,6 +140,7 @@ targets.forEach((target) => {
     if (!inLongPress && longPressTarget) {
       longPressTarget = null;
     }
+    evStack.pop(e);
   });
 
   target.addEventListener("pointercancel", (e) => {
@@ -167,6 +181,9 @@ function targetOnClick(e) {
   }
 
   e.stopPropagation();
+  if (evStack.length > 1) {
+    return;
+  }
   if (inLongPress || isAborted) {
     inLongPress = false;
     longPressTarget = null;
@@ -204,7 +221,7 @@ function targetOnDoubleClick(e) {
   backup.height = e.target.style.height;
 }
 
-function Abort() {
+function abort() {
   if (longPressTarget) {
     longPressTarget.style.top = backup.top;
     longPressTarget.style.left = backup.left;
