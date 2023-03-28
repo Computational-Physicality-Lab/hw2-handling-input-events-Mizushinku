@@ -142,11 +142,12 @@ targets.forEach((target) => {
     }
     e.stopPropagation();
     console.log(`Down, target = ${e.target.style.top}`);
+    checkToScalingMode(e);
+
     if (!e.isPrimary) {
       abort();
       return;
     }
-    checkToScalingMode(e);
     longPress(e);
   });
 
