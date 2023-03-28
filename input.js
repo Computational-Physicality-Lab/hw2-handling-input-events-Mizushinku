@@ -20,6 +20,9 @@ var doubleTapLag = 350;
 var scalingTimestamp = null;
 var toScalingTolerance = 100;
 var isScaling = false;
+var touchCnt = 0;
+var anchor_1 = null;
+var anchor_2 = null;
 
 var backup = {
   top: null,
@@ -50,6 +53,7 @@ const workspace = document.getElementById("workspace");
 var isWsDown = false;
 
 workspace.addEventListener("pointerdown", (e) => {
+  ++touchCnt;
   console.log("WS Down");
   if (followingTarget && e.pointerType == "touch") {
     if (e.isPrimary) {
@@ -62,7 +66,12 @@ workspace.addEventListener("pointerdown", (e) => {
       return;
     }
   }
-  checkToScalingMode(e);
+  if (isScaling) {
+    console.log(touchCnt);
+  } else {
+    checkToScalingMode(e);
+  }
+
   if (longPressTarget && !e.isPrimary) {
     abort();
     return;
@@ -70,6 +79,7 @@ workspace.addEventListener("pointerdown", (e) => {
   isWsDown = true;
 });
 workspace.addEventListener("pointerup", (e) => {
+  --touchCnt;
   console.log("WS Up");
   longPressTarget = null;
   isAborted = false;
@@ -77,6 +87,9 @@ workspace.addEventListener("pointerup", (e) => {
     const [x, y] = checkPos(workspace, followingTarget, e);
     followingTarget.style.left = `${x}px`;
     followingTarget.style.top = `${y}px`;
+  }
+  if (isScaling) {
+    console.log(touchCnt);
   }
 });
 workspace.addEventListener("click", (e) => {
@@ -102,6 +115,8 @@ workspace.addEventListener("pointermove", (e) => {
     const [x, y] = checkPos(workspace, followingTarget, e);
     followingTarget.style.left = `${x}px`;
     followingTarget.style.top = `${y}px`;
+  } else if (isScaling) {
+    // console.log("Scaling!");
   }
 });
 
@@ -137,7 +152,8 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    if (followingTarget) {
+    ++touchCnt;
+    if (followingTarget || isScaling) {
       return;
     }
     e.stopPropagation();
@@ -152,7 +168,8 @@ targets.forEach((target) => {
   });
 
   target.addEventListener("pointerup", (e) => {
-    if (followingTarget) {
+    --touchCnt;
+    if (followingTarget || isScaling) {
       return;
     }
     e.stopPropagation();
@@ -183,9 +200,6 @@ targets.forEach((target) => {
 /*************************/
 
 function longPress(e) {
-  // let e = this; //long press event "e".
-  // console.log(`LP ${e.target.style.top}`);
-  // clearTimeout(longPressTimer);
   longPressTarget = e.target;
   backup.top = e.target.style.top;
   backup.left = e.target.style.left;
@@ -202,7 +216,7 @@ function setFocus(ele) {
 }
 
 function targetOnClick(e) {
-  if (followingTarget || isAborted) {
+  if (followingTarget || isAborted || isScaling) {
     isAborted = false;
     return;
   }
@@ -249,12 +263,17 @@ function checkToScalingMode(e) {
   if (e.pointerType == "touch") {
     if (e.isPrimary) {
       scalingTimestamp = e.timeStamp;
+      anchor_1 = e;
     } else {
+      anchor_2 = e;
       const gap = e.timeStamp - scalingTimestamp;
       if (gap < toScalingTolerance) {
         console.log("Scaling Mode");
+        isScaling = true;
       }
       scalingTimestamp = null;
+      anchor_1 = null;
+      anchor_2 = null;
     }
   }
 }
