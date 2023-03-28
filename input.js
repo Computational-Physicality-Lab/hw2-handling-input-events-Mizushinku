@@ -17,6 +17,10 @@ var duringFirstTap = false;
 var followingTarget = null;
 var doubleTapLag = 350;
 
+var scalingTimestamp = null;
+var toScalingTolerance = 100;
+var isScaling = false;
+
 var backup = {
   top: null,
   left: null,
@@ -85,7 +89,6 @@ workspace.addEventListener("click", (e) => {
       focusedTarget = null;
     }
     isWsDown = false;
-    console.log(`${e.clientX}, ${e.clientY}`);
   }
 });
 workspace.addEventListener("pointermove", (e) => {
@@ -142,6 +145,17 @@ targets.forEach((target) => {
       abort();
       return;
     }
+    if (e.pointerType == "touch") {
+      if (e.isPrimary) {
+        scalingTimestamp = e.timeStamp;
+      } else {
+        const gap = e.timeStamp - scalingTimestamp;
+        if (gap < toScalingTolerance) {
+          console.log("Scaling Mode");
+        }
+        scalingTimestamp = null;
+      }
+    }
     longPress(e);
   });
 
@@ -196,7 +210,6 @@ function setFocus(ele) {
 }
 
 function targetOnClick(e) {
-  console.log(`Click, ${e.pointerType}, ${e.isPrimary}`);
   if (followingTarget || isAborted) {
     isAborted = false;
     return;
