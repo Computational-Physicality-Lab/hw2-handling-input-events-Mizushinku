@@ -90,6 +90,9 @@ workspace.addEventListener("pointermove", (e) => {
     followingTarget.style.top = `${e.clientY}px`;
   }
 });
+workspace.addEventListener("touchstart", (e) => {
+  console.log(e);
+});
 
 /*********************************/
 /******* Targets Code Zone *******/
@@ -131,10 +134,6 @@ targets.forEach((target) => {
   });
   target.addEventListener("pointerout", (e) => {
     // console.log(`Out, target = ${e.target.style.top}`);
-  });
-
-  target.addEventListener("touchstart", (e) => {
-    console.log(e);
   });
 });
 
