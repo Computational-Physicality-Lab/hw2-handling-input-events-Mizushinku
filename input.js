@@ -30,7 +30,7 @@ var backup = {
   height: null,
 };
 var isAborted = false;
-var evStack = [];
+// var evStack = [];
 
 window.oncontextmenu = (e) => {
   if (e.pointerType == "touch") {
@@ -108,17 +108,20 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
+    console.log(
+      `Type : ${e.pointerType}, ID : ${e.pointerId}, isPri : ${e.isPrimary}`
+    );
     if (followingTarget) {
       return;
     }
     e.stopPropagation();
     console.log(`Down, target = ${e.target.style.top}`);
-    evStack.push(e);
+    // evStack.push(e);
 
-    if (evStack.length > 1) {
-      abort();
-      return;
-    }
+    // if (evStack.length > 1) {
+    //   abort();
+    //   return;
+    // }
     longPress(e);
   });
 
@@ -128,10 +131,10 @@ targets.forEach((target) => {
     }
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
-    if (evStack.length > 1) {
-      evStack.pop();
-      return;
-    }
+    // if (evStack.length > 1) {
+    //   evStack.pop();
+    //   return;
+    // }
     if (longPressTarget !== e.target || e.pointerType == "touch") {
       inLongPress = false;
       longPressTarget = null;
@@ -140,7 +143,7 @@ targets.forEach((target) => {
     if (!inLongPress && longPressTarget) {
       longPressTarget = null;
     }
-    evStack.pop(e);
+    // evStack.pop(e);
   });
 
   target.addEventListener("pointercancel", (e) => {
@@ -181,9 +184,9 @@ function targetOnClick(e) {
   }
 
   e.stopPropagation();
-  if (evStack.length > 1) {
-    return;
-  }
+  // if (evStack.length > 1) {
+  //   return;
+  // }
   if (inLongPress || isAborted) {
     inLongPress = false;
     longPressTarget = null;
