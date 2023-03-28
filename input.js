@@ -62,6 +62,7 @@ workspace.addEventListener("pointerdown", (e) => {
       return;
     }
   }
+  checkToScalingMode(e);
   if (longPressTarget && !e.isPrimary) {
     abort();
     return;
@@ -136,7 +137,6 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    console.log(`Down! ${e}`);
     if (followingTarget) {
       return;
     }
