@@ -271,7 +271,7 @@ function handleScaling(e) {
       focusedTarget.style.width = `${
         parseInt(focusedTarget.style.width) + 1
       }px`;
-    } else {
+    } else if (curDiffX < prevDiffX) {
       focusedTarget.style.width = `${Math.max(
         parseInt(focusedTarget.style.width) - 1,
         50
@@ -283,7 +283,7 @@ function handleScaling(e) {
       focusedTarget.style.height = `${
         parseInt(focusedTarget.style.height) + 1
       }px`;
-    } else {
+    } else if (curDiffY < prevDiffY) {
       focusedTarget.style.height = `${Math.max(
         parseInt(focusedTarget.style.height) - 1,
         50
