@@ -246,9 +246,11 @@ function checkToScalingMode(e) {
       scalingTimestamp = e.timeStamp;
     } else {
       const gap = e.timeStamp - scalingTimestamp;
-      if (gap < toScalingTolerance) {
+      if (gap < toScalingTolerance && focusedTarget) {
         console.log("Scaling Mode");
         isScaling = true;
+        backup.width = focusedTarget.style.width;
+        backup.height = focusedTarget.style.height;
       }
       scalingTimestamp = null;
     }
@@ -261,16 +263,18 @@ function handleScaling(e) {
   const curDiffX = Math.abs(anchors[0].clientX - anchors[1].clientX);
   const curDiffY = Math.abs(anchors[0].clientY - anchors[1].clientY);
   if (curDiffX > curDiffY) {
+    const s = Math.abs(curDiffX - prevDiffX);
     if (curDiffX > prevDiffX) {
-      console.log("Scaling Up X...");
+      focusedTarget.style.width = `${focusedTarget.style.width + s}px`;
     } else {
-      console.log("Scaling Down X...");
+      focusedTarget.style.width = `${focusedTarget.style.width - s}px`;
     }
   } else {
-    if (curDiffY > prevDiffX) {
-      console.log("Scaling Up Y...");
+    const s = Math.abs(curDiffY - prevDiffY);
+    if (curDiffY > prevDiffY) {
+      focusedTarget.style.height = `${focusedTarget.style.height + s}px`;
     } else {
-      console.log("Scaling Down Y...");
+      focusedTarget.style.height = `${focusedTarget.style.height - s}px`;
     }
   }
   prevDiffX = curDiffX;
@@ -322,5 +326,7 @@ function abort() {
     anchors = [];
     prevDiffX = -1;
     prevDiffY = -1;
+    focusedTarget.style.width = backup.width;
+    focusedTarget.style.height = backup.height;
   }
 }
