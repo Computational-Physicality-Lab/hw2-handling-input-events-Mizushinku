@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SSUI HW1 - Details</title>
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Catamaran:wght@200;500&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Your CSS Code -->
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <!-- JSON Shirt Object -->
+    <script src="shirts.js"></script>
+
+    <!-- Your JS Code -->
+    <script src="main.js"></script>
+  </head>
+  <body onload="initDetails()">
+    <!-- Your Code Here -->
+    <header>
+      <div class="top-color-fill"></div>
+      <div class="top-boxes">
+        <ul class="logos-name-car">
+          <li>
+            <a href="./index.html" class="logo-link">
+              <img class="logo-img" src="./site_images/logo.png" alt="logo" />
+            </a>
+          </li>
+          <li>Scotty Shirts U Illustrate (SSUI)</li>
+          <li class="car-and-count">
+            <a href="./not_implemented.html" class="car-link">
+              <img
+                class="car-img"
+                src="./site_images/shopping-cart.svg"
+                alt="shopping car"
+              />
+              <div class="car-count">0</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <ul class="menu">
+        <li class="menu-item">
+          <a href="./products.html" class="menu-link">T-SHIRTS</a>
+        </li>
+        <li class="menu-item">
+          <a href="./not_implemented.html" class="menu-link"
+            >CREATE FROM PICTURE</a
+          >
+        </li>
+        <li class="menu-item">
+          <a href="./not_implemented.html" class="menu-link">CREATE YOUR OWN</a>
+        </li>
+        <li class="menu-item">
+          <a href="./not_implemented.html" class="menu-link">ABOUT US</a>
+        </li>
+        <li class="menu-item">
+          <a href="./not_implemented.html" class="menu-link">LOG IN</a>
+        </li>
+      </ul>
+    </header>
+
+    <h1 id="detail-prod-name"></h1>
+    <div class="grid-container" id="grid-detail">
+      <img id="detail-prod-img" src="" alt="" />
+      <div id="detail-info-btns">
+        <h1 id="info-price"></h1>
+        <p id="info-desc"></p>
+        <div class="btns-list">
+          <p>Side:&nbsp;</p>
+          <button id="btn-front">Front</button>
+          <button id="btn-back">Back</button>
+        </div>
+        <div class="btns-list" id="detail-color-btns-list">
+          <p>Color:&nbsp;</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <ul class="footer-menu">
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link"
+            >Contact Us</a
+          >
+        </li>
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link">Site Map</a>
+        </li>
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link"
+            >Privacy Policy</a
+          >
+        </li>
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link">Careers</a>
+        </li>
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link">Reviews</a>
+        </li>
+        <li class="footer-menu-item">Designed by iSurtr</li>
+      </ul>
+    </footer>
+  </body>
+</html>

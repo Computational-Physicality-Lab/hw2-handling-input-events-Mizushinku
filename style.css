@@ -1,0 +1,279 @@
+/* Your Code Here */
+* {
+  margin: 0;
+}
+
+img {
+  vertical-align: middle;
+}
+
+.top-color-fill {
+  background-color: #c51230;
+  width: 100%;
+  height: 20px;
+}
+
+.logos-name-car {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Catamaran";
+  font-size: 3rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 10%;
+  margin-top: 20px;
+}
+
+.logo-img {
+  height: 100px;
+}
+
+.car-img {
+  height: 50px;
+}
+
+.car-link {
+  display: flex;
+  align-items: center;
+  background-color: #ac2432;
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.car-link:hover {
+  background-color: darkred;
+  transition: 0.5s;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  text-align: center;
+  font-family: "Catamaran";
+  font-size: 1.4rem;
+  margin: 10px 0;
+  padding: 10px 10%;
+  border-top: 2px solid gray;
+}
+
+.menu-link {
+  text-decoration: none;
+  color: #c51230;
+}
+
+.menu-link:hover {
+  border-bottom: 5px solid #c51230;
+  transition: 0.1s;
+}
+
+#home-img {
+  width: 100%;
+}
+
+.text-frag-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.text-frag {
+  min-height: 200px;
+  width: 30%;
+  border: 5px solid #c51230;
+  border-radius: 10px;
+  margin: 30px 5%;
+  padding: 30px 2%;
+  padding-bottom: 20px;
+  font-family: "Catamaran";
+  word-wrap: break-word;
+}
+
+.text-frag-title {
+  font-size: 1.8rem;
+  color: #c51230;
+}
+
+.text-frag-content {
+  margin-top: 15px;
+}
+
+footer {
+  background-color: #c51230;
+  font-family: "Open Sans";
+  height: 100px;
+}
+
+.footer-menu {
+  display: flex;
+  height: 100px;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  text-align: center;
+  font-size: 1rem;
+  margin: 0 10%;
+  color: aliceblue;
+}
+
+.footer-menu-link {
+  text-decoration: none;
+  color: rgb(184, 192, 199);
+}
+
+.footer-menu-link:hover {
+  color: aliceblue;
+  transition: 0.1s;
+}
+
+#oops-img {
+  display: block;
+  margin: 0 auto;
+  height: 70%;
+  opacity: 0.5;
+}
+
+#oops-text {
+  text-align: center;
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+#product-top-text {
+  font-size: 4rem;
+  font-family: "Catamaran";
+  margin: 20px 0;
+  margin-left: 7%;
+}
+
+.grid-container {
+  display: grid;
+}
+
+#grid-product {
+  justify-content: center;
+  gap: 20px 4%;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 10%;
+  margin-bottom: 20px;
+}
+
+.grid-product-item {
+  justify-self: center;
+  text-align: left;
+  border: 4px solid #c51230;
+  border-radius: 5px;
+}
+
+.product-shirt-img {
+  width: 100%;
+}
+
+.product-shirt-name {
+  margin: 0 5%;
+  margin-top: 10px;
+  font-size: 1.5rem;
+  font-family: "Catamaran";
+  color: #c51230;
+}
+
+.product-shirt-ava-color {
+  margin: 0 5%;
+  margin-bottom: 12px;
+  font-family: "Catamaran";
+  color: gray;
+}
+
+.link-to-detail {
+  text-decoration: none;
+  text-align: center;
+  display: block;
+  margin: auto;
+  width: 20%;
+  margin-bottom: 10px;
+  padding: 2%;
+  background-color: #c51230;
+  color: aliceblue;
+  font-family: "Catamaran";
+  border: 2px solid #c51230;
+  border-radius: 15px;
+}
+
+.link-to-detail:hover {
+  background-color: darkred;
+  border-color: darkred;
+  transition: 0.5s;
+}
+
+#detail-prod-name {
+  font-size: 4rem;
+  font-family: "Catamaran";
+  margin: 20px 0;
+  margin-left: 13%;
+}
+
+#grid-detail {
+  justify-content: center;
+  gap: 5%;
+  grid-template-columns: 1fr 1fr;
+  /* place-items: center; */
+  margin: 10px 5%;
+}
+
+#grid-detail > img {
+  justify-self: right;
+  margin: 20px;
+  margin-left: 10%;
+}
+
+#detail-info-btns {
+  justify-items: left;
+}
+
+#detail-info-btns > h1 {
+  color: #c51230;
+  font-family: "Catamaran";
+  font-size: 3rem;
+}
+
+#detail-info-btns > p {
+  color: #c51230;
+  font-family: "Catamaran";
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+}
+
+.btns-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  font-family: "Catamaran";
+  margin-bottom: 20px;
+}
+
+.btns-list > p {
+  font-size: 1.3rem;
+  font-family: "Catamaran";
+  color: gray;
+  align-self: center;
+}
+
+.btns-list > button {
+  align-self: center;
+  margin: 0 2%;
+  border: 2px solid #c51230;
+  border-radius: 10px;
+  font-size: 1.3rem;
+  padding: 1% 2%;
+  background-color: #c51230;
+}
+
+.btns-list > button:hover {
+  color: white;
+}

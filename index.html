@@ -1,33 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no" />
-    <!-- turn off pinch zoom https://stackoverflow.com/questions/37379694/javascript-how-to-stop-pinch-zoom-multi-touch-input-attacks -->
-    <link rel="stylesheet" href="inputstyle.css" />
-    <title>HW2 SSUI</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SSUI HW1 - Home</title>
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Catamaran:wght@200;500&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Your CSS Code -->
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <!-- JSON Shirt Object -->
+    <script src="shirts.js"></script>
+
+    <!-- Your JS Code -->
+    <script src="main.js"></script>
   </head>
-  <!-- you should not need to edit this fine for HW2, except to test different numbers of div's-->
   <body>
-    <!-- your code should work for any number of divs -->
-    <div id="workspace">
-      <div
-        class="target"
-        style="top: 100px; left: 50px; width: 60px; height: 100px"
-      ></div>
-
-      <div
-        class="target"
-        style="top: 230px; left: 150px; width: 150px; height: 80px"
-      ></div>
-
-      <div
-        class="target"
-        style="top: 360px; left: 70px; width: 100px; height: 100px"
-      ></div>
+    <!-- Your Code Here -->
+    <header>
+      <div class="top-color-fill"></div>
+      <div class="top-boxes">
+        <ul class="logos-name-car">
+          <li>
+            <a href="./index.html" class="logo-link">
+              <img class="logo-img" src="./site_images/logo.png" alt="logo" />
+            </a>
+          </li>
+          <li>Scotty Shirts U Illustrate (SSUI)</li>
+          <li class="car-and-count">
+            <a href="./not_implemented.html" class="car-link">
+              <img
+                class="car-img"
+                src="./site_images/shopping-cart.svg"
+                alt="shopping car"
+              />
+              <div class="car-count">0</div>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <ul class="menu">
+        <li class="menu-item">
+          <a href="./products.html" class="menu-link">T-SHIRTS</a>
+        </li>
+        <li class="menu-item">
+          <a href="./not_implemented.html" class="menu-link"
+            >CREATE FROM PICTURE</a
+          >
+        </li>
+        <li class="menu-item">
+          <a href="./inputs/index.html" class="menu-link">CREATE YOUR OWN</a>
+        </li>
+        <li class="menu-item">
+          <a href="./not_implemented.html" class="menu-link">ABOUT US</a>
+        </li>
+        <li class="menu-item">
+          <a href="./not_implemented.html" class="menu-link">LOG IN</a>
+        </li>
+      </ul>
+    </header>
+    <img src="./site_images/home.png" alt="home image" id="home-img" />
+    <div class="text-frag-container">
+      <div class="text-frag">
+        <h2 class="text-frag-title">破道の九十　黒棺</h2>
+        <p class="text-frag-content">
+          滲み出す混濁の紋章　不遜なる狂気の器<br />
+          湧き上がり・否定し・痺れ・瞬き　眠りを妨げる<br />
+          爬行する鉄の王女　絶えず自壊する泥の人形<br />
+          結合せよ　反発せよ　地に満ち己の無力を知れ
+        </p>
+      </div>
+      <div class="text-frag">
+        <h2 class="text-frag-title">インディグネイション</h2>
+        <p class="text-frag-content">
+          天光満る処に我は在り、<br />
+          黄泉の門開く処に汝在り、<br />
+          出でよ神の雷、<br />
+          これで終わりです、<br />
+          インディグネイション！
+        </p>
+      </div>
     </div>
-
-    <!-- script -->
-    <script src="input.js"></script>
+    <footer>
+      <ul class="footer-menu">
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link"
+            >Contact Us</a
+          >
+        </li>
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link">Site Map</a>
+        </li>
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link"
+            >Privacy Policy</a
+          >
+        </li>
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link">Careers</a>
+        </li>
+        <li class="footer-menu-item">
+          <a href="./not_implemented.html" class="footer-menu-link">Reviews</a>
+        </li>
+        <li class="footer-menu-item">Designed by iSurtr</li>
+      </ul>
+    </footer>
   </body>
 </html>
