@@ -20,9 +20,9 @@ var doubleTapLag = 350;
 var scalingTimestamp = null;
 var toScalingTolerance = 100;
 var isScaling = false;
-var touchCnt = 0;
-var anchor_1 = null;
-var anchor_2 = null;
+var anchors = [];
+var prevDiffX = -1;
+var prevDiffY = -1;
 
 var backup = {
   top: null,
@@ -53,7 +53,7 @@ const workspace = document.getElementById("workspace");
 var isWsDown = false;
 
 workspace.addEventListener("pointerdown", (e) => {
-  ++touchCnt;
+  anchors.push(e);
   console.log("WS Down");
   if (followingTarget && e.pointerType == "touch") {
     if (e.isPrimary) {
@@ -67,9 +67,7 @@ workspace.addEventListener("pointerdown", (e) => {
     }
   }
   if (isScaling) {
-    if (touchCnt == 2) {
-      anchor_2 = e;
-    } else if (touchCnt >= 3) {
+    if (anchors.length >= 3) {
       abort();
     }
   } else {
@@ -83,7 +81,7 @@ workspace.addEventListener("pointerdown", (e) => {
   isWsDown = true;
 });
 workspace.addEventListener("pointerup", (e) => {
-  --touchCnt;
+  removeAnchor(e);
   console.log("WS Up");
   longPressTarget = null;
   isAborted = false;
@@ -92,12 +90,8 @@ workspace.addEventListener("pointerup", (e) => {
     followingTarget.style.left = `${x}px`;
     followingTarget.style.top = `${y}px`;
   }
-  if (isScaling) {
-    if (touchCnt == 0) {
-      abort();
-    } else if (touchCnt == 1 && e === anchor_1) {
-      anchor_1 = anchor_2;
-    }
+  if (isScaling && anchors.length == 0) {
+    abort();
   }
 });
 workspace.addEventListener("click", (e) => {
@@ -123,12 +117,9 @@ workspace.addEventListener("pointermove", (e) => {
     const [x, y] = checkPos(workspace, followingTarget, e);
     followingTarget.style.left = `${x}px`;
     followingTarget.style.top = `${y}px`;
-  } else if (isScaling && touchCnt == 2) {
-    console.log(
-      "On Scaling!",
-      `a1 : ${anchor_1.clientX}, ${anchor_1.clientY}`,
-      `a2 : ${anchor_2.clientX}, ${anchor_2.clientY}`
-    );
+  } else if (isScaling && anchors.length == 2) {
+    console.log("On Scaling!");
+    handleScaling(e);
   }
 });
 
@@ -169,7 +160,7 @@ targets.forEach((target) => {
     }
     e.stopPropagation();
     console.log(`Down, target = ${e.target.style.top}`);
-    ++touchCnt;
+    anchors.push(e);
     checkToScalingMode(e);
 
     if (!e.isPrimary) {
@@ -185,7 +176,7 @@ targets.forEach((target) => {
     }
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
-    --touchCnt;
+    removeAnchor(e);
     if (!e.isPrimary) {
       return;
     }
@@ -275,9 +266,7 @@ function checkToScalingMode(e) {
   if (e.pointerType == "touch") {
     if (e.isPrimary) {
       scalingTimestamp = e.timeStamp;
-      anchor_1 = e;
     } else {
-      anchor_2 = e;
       const gap = e.timeStamp - scalingTimestamp;
       if (gap < toScalingTolerance) {
         console.log("Scaling Mode");
@@ -286,6 +275,23 @@ function checkToScalingMode(e) {
       scalingTimestamp = null;
     }
   }
+}
+
+function handleScaling(e) {
+  const index = anchors.findIndex((anchor) => anchor.pointerId === e.pointerId);
+  anchors[index] = e;
+  const curDiffX = Math.abs(anchors[0].clientX - anchors[1].clientX);
+  const curDiffY = Math.abs(anchors[0].clientY - anchors[1].clientY);
+  if (curDiffX > curDiffY) {
+    console.log("<-----> scaling on X-axis.");
+  } else {
+    console.log("^-----ˇ scaling on Y-axis.");
+  }
+}
+
+function removeAnchor(e) {
+  const index = anchors.findIndex((anchor) => anchor.pointerId === e.pointerId);
+  anchors.splice(index, 1);
 }
 
 function abort() {
@@ -303,6 +309,9 @@ function abort() {
     console.log("Abort Following");
   } else if (isScaling) {
     console.log("Abort Scaling");
-    isScaling;
+    isScaling = false;
+    anchors.clear();
+    prevDiffX = -1;
+    prevDiffY = -1;
   }
 }
