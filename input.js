@@ -125,9 +125,9 @@ workspace.addEventListener("pointermove", (e) => {
     followingTarget.style.top = `${y}px`;
   } else if (isScaling && touchCnt == 2) {
     console.log(
-      "Scaling!",
-      `a1 : ${anchor_1.clientX}, ${anchor_1.clientY}`,
-      `a2 : ${anchor_2.clientX}, ${anchor_2.clientY}`
+      "On Scaling!"
+      // `a1 : ${anchor_1.clientX}, ${anchor_1.clientY}`,
+      // `a2 : ${anchor_2.clientX}, ${anchor_2.clientY}`
     );
   }
 });
@@ -304,7 +304,7 @@ function abort() {
     followingTarget = null;
     console.log("Abort Following");
   } else if (isScaling) {
-    console("Abort Scaling");
+    console.log("Abort Scaling");
     isScaling;
   }
 }
