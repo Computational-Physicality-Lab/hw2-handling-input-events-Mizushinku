@@ -23,7 +23,7 @@ body {
 .target {
   position: absolute;
   border: 1px solid black;
-  background-color: red;
+  background-color: purple;
   box-sizing: border-box;
   transform: translate(-50%, -50%);
 }

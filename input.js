@@ -13,6 +13,10 @@ document.body.addEventListener("keydown", (e) => {
       longPressTarget.style.top = backup.top;
       longPressTarget.style.left = backup.left;
       longPressTarget = null;
+    } else if (followingTarget) {
+      followingTarget.style.top = backup.top;
+      followingTarget.style.left = backup.left;
+      followingTarget = null;
     }
   }
 });
@@ -76,7 +80,7 @@ var tapPos = {
   posX: null,
   posY: null,
 };
-var tapLag = 300;
+var tapLag = 350;
 
 var doubleTapTimer = null;
 var duringFirstTap = false;
@@ -95,7 +99,9 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    e.stopPropagation();
+    if (!(followingTarget && e.pointerType == "touch")) {
+      e.stopPropagation();
+    }
     console.log(`Down, target = ${e.target.style.top}`);
     if (e.pointerType == "touch") {
       isTap = true;
@@ -119,7 +125,11 @@ targets.forEach((target) => {
 
     //TouchUp -> Click
     if (e.pointerType == "touch") {
-      if (isTap && e.pageX == tapPos.posX && e.pageY == tapPos.posY) {
+      if (
+        isTap &&
+        Math.abs(e.pageX - tapPos.posX) <= 30 &&
+        Math.abs(e.pageY - tapPos.posY) <= 30
+      ) {
         isTap = false;
         clearTimeout(tapTimer);
         targetOnClick(e);
@@ -136,10 +146,10 @@ targets.forEach((target) => {
   });
 
   target.addEventListener("touchstart", (e) => {
-    e.preventDefault();
+    // e.preventDefault();
   });
   target.addEventListener("touchend", (e) => {
-    e.preventDefault();
+    // e.preventDefault();
   });
 });
 
