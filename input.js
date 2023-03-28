@@ -90,7 +90,10 @@ workspace.addEventListener("pointerup", (e) => {
     followingTarget.style.top = `${y}px`;
   }
   if (isScaling && anchors.length == 0) {
-    abort();
+    isScaling = false;
+    anchors = [];
+    prevDiffX = -1;
+    prevDiffY = -1;
   }
 });
 workspace.addEventListener("click", (e) => {
@@ -266,7 +269,7 @@ function handleScaling(e) {
     const s = Math.abs(curDiffX - prevDiffX);
     if (curDiffX > prevDiffX) {
       focusedTarget.style.width = `${
-        (parseInt(focusedTarget.style.width) + 1, 50)
+        parseInt(focusedTarget.style.width) + 1
       }px`;
     } else {
       focusedTarget.style.width = `${Math.max(
