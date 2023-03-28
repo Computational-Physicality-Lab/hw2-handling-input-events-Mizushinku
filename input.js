@@ -53,11 +53,6 @@ var isWsDown = false;
 
 workspace.addEventListener("pointerdown", (e) => {
   console.log("WS Down");
-
-  console.log(
-    `Type : ${e.pointerType}, ID : ${e.pointerId}, isPri : ${e.isPrimary}`
-  );
-
   isWsDown = true;
   if (followingTarget && e.pointerType == "touch") {
     followingTarget.style.left = `${e.clientX}px`;
@@ -108,20 +103,15 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    console.log(
-      `Type : ${e.pointerType}, ID : ${e.pointerId}, isPri : ${e.isPrimary}`
-    );
     if (followingTarget) {
       return;
     }
     e.stopPropagation();
     console.log(`Down, target = ${e.target.style.top}`);
-    // evStack.push(e);
-
-    // if (evStack.length > 1) {
-    //   abort();
-    //   return;
-    // }
+    if (!e.isPrimary) {
+      abort();
+      return;
+    }
     longPress(e);
   });
 
@@ -131,10 +121,9 @@ targets.forEach((target) => {
     }
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
-    // if (evStack.length > 1) {
-    //   evStack.pop();
-    //   return;
-    // }
+    if (!e.isPrimary) {
+      return;
+    }
     if (longPressTarget !== e.target || e.pointerType == "touch") {
       inLongPress = false;
       longPressTarget = null;
@@ -143,7 +132,6 @@ targets.forEach((target) => {
     if (!inLongPress && longPressTarget) {
       longPressTarget = null;
     }
-    // evStack.pop(e);
   });
 
   target.addEventListener("pointercancel", (e) => {
@@ -184,9 +172,9 @@ function targetOnClick(e) {
   }
 
   e.stopPropagation();
-  // if (evStack.length > 1) {
-  //   return;
-  // }
+  if (!e.isPrimary) {
+    return;
+  }
   if (inLongPress || isAborted) {
     inLongPress = false;
     longPressTarget = null;
