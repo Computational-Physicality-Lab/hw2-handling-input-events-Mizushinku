@@ -62,6 +62,10 @@ workspace.addEventListener("pointerdown", (e) => {
       return;
     }
   }
+  if (longPressTarget && !e.isPrimary) {
+    abort();
+    return;
+  }
   isWsDown = true;
 });
 workspace.addEventListener("pointerup", (e) => {
@@ -74,7 +78,7 @@ workspace.addEventListener("pointerup", (e) => {
   }
 });
 workspace.addEventListener("click", (e) => {
-  if (e.isPrimary && isWsDown) {
+  if (isWsDown) {
     console.log("WS Click");
     if (followingTarget) {
       followingTarget = null;
