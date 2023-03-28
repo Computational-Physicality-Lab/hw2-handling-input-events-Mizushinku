@@ -11,12 +11,6 @@ var focusedTarget = null;
 
 var inLongPress = false;
 var longPressTarget = null;
-var longPressLag = 500;
-
-var tapPos = {
-  posX: null,
-  posY: null,
-};
 
 var doubleTapTimer = null;
 var duringFirstTap = false;
@@ -93,13 +87,33 @@ workspace.addEventListener("click", (e) => {
 workspace.addEventListener("pointermove", (e) => {
   if (e.isPrimary && longPressTarget) {
     inLongPress = true;
-    longPressTarget.style.left = `${e.clientX}px`;
-    longPressTarget.style.top = `${e.clientY}px`;
+    const [x, y] = checkPos(workspace, e.target, e);
+    longPressTarget.style.left = `${x}px`;
+    longPressTarget.style.top = `${y}px`;
   } else if (e.isPrimary && followingTarget) {
     followingTarget.style.left = `${e.clientX}px`;
     followingTarget.style.top = `${e.clientY}px`;
   }
 });
+
+function checkPos(parent, child, e) {
+  const parentRect = parent.getBoundingClientRect();
+  const childRect = child.getBoundingClientRect();
+
+  let x = e.clientX;
+  let y = e.clientY;
+
+  x = Math.max(
+    parentRect.left,
+    Math.min(parentRect.right - childRect.width, x)
+  );
+  y = Math.max(
+    parentRect.top,
+    Math.min(parentRect.bottom - childRect.height, y)
+  );
+
+  return [x, y];
+}
 
 /*********************************/
 /******* Targets Code Zone *******/
