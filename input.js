@@ -9,9 +9,10 @@ of the interaction.
 
 var focusedTarget = null;
 
-var longPressTimer = null;
+// var longPressTimer = null;
+var inLongPress = false;
 var longPressTarget = null;
-var longPressLag = 700;
+var longPressLag = 500;
 
 var tapPos = {
   posX: null,
@@ -70,7 +71,10 @@ workspace.addEventListener("pointerup", (e) => {
 workspace.addEventListener("click", (e) => {
   if (isWsDown) {
     console.log("WS Click");
-    if (focusedTarget) {
+    if (followingTarget) {
+      followingTarget = null;
+      isAborted = false;
+    } else if (focusedTarget) {
       focusedTarget.style.backgroundColor = "red";
       focusedTarget = null;
     }
@@ -79,15 +83,13 @@ workspace.addEventListener("click", (e) => {
 });
 workspace.addEventListener("pointermove", (e) => {
   if (e.isPrimary && longPressTarget) {
+    inLongPress = true;
     longPressTarget.style.left = `${e.clientX}px`;
     longPressTarget.style.top = `${e.clientY}px`;
   } else if (followingTarget) {
     followingTarget.style.left = `${e.clientX}px`;
     followingTarget.style.top = `${e.clientY}px`;
   }
-  workspace.addEventListener("dblclick", () => {
-    console.log("WS Double Click");
-  });
 });
 
 /*********************************/
@@ -101,29 +103,36 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
-    // Propagation to WS if in following mode and primary touch down
-    if (!(followingTarget && e.pointerType == "touch" && e.isPrimary)) {
-      e.stopPropagation();
-    }
-    if (followingTarget && !e.isPrimary) {
-      console.log(`FLOW and NP Down : ${e}`);
-      Abort();
-      isAborted = true;
+    // Propagation to WS if in following mode and touch down
+    if (followingTarget) {
       return;
     }
+    e.stopPropagation();
+    // if (followingTarget && !e.isPrimary) {
+    //   console.log(`FLOW and NP Down : ${e}`);
+    //   Abort();
+    //   isAborted = true;
+    //   return;
+    // }
     console.log(`Down, target = ${e.target.style.top}`);
-    if (!followingTarget) {
-      longPressTimer = setTimeout(longPress.bind(e), longPressLag);
-    }
+    longPress(e);
+    //   longPressTimer = setTimeout(longPress.bind(e), longPressLag);
   });
 
   target.addEventListener("pointerup", (e) => {
+    if (followingTarget) {
+      return;
+    }
     e.stopPropagation();
     console.log(`Up, target = ${e.target.style.top}`);
-    clearTimeout(longPressTimer);
+    // clearTimeout(longPressTimer);
     if (longPressTarget !== e.target || e.pointerType == "touch") {
+      inLongPress = false;
       longPressTarget = null;
       isAborted = false;
+    }
+    if (!inLongPress && longPressTarget) {
+      longPressTarget = null;
     }
   });
 
@@ -132,7 +141,7 @@ targets.forEach((target) => {
   });
   target.addEventListener("pointerout", (e) => {
     // console.log(`Out, target = ${e.target.style.top}`);
-    clearTimeout(longPressTimer);
+    // clearTimeout(longPressTimer);
   });
 });
 
@@ -140,10 +149,10 @@ targets.forEach((target) => {
 /******* Functions *******/
 /*************************/
 
-function longPress() {
-  let e = this; //long press event "e".
-  console.log(`LP ${e.target.style.top}`);
-  clearTimeout(longPressTimer);
+function longPress(e) {
+  // let e = this; //long press event "e".
+  // console.log(`LP ${e.target.style.top}`);
+  // clearTimeout(longPressTimer);
   longPressTarget = e.target;
   backup.top = e.target.style.top;
   backup.left = e.target.style.left;
@@ -160,17 +169,19 @@ function setFocus(ele) {
 }
 
 function targetOnClick(e) {
+  if (followingTarget || isAborted) {
+    isAborted = false;
+    return;
+  }
+
   e.stopPropagation();
-  if (longPressTarget || isAborted) {
+  if (inLongPress || isAborted) {
+    inLongPress = false;
     longPressTarget = null;
     isAborted = false;
     return;
   }
-  if (followingTarget || isAborted) {
-    followingTarget = null;
-    isAborted = false;
-    return;
-  }
+
   console.log(`Click, target = ${e.target.style.top}`);
   let isSameTarget = focusedTarget === e.target;
   setFocus(e.target);
@@ -205,6 +216,7 @@ function Abort() {
   if (longPressTarget) {
     longPressTarget.style.top = backup.top;
     longPressTarget.style.left = backup.left;
+    inLongPress = false;
     longPressTarget = null;
     isAborted = true;
     console.log("Abort Long Press");
