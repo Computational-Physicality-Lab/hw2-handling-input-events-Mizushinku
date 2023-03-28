@@ -136,6 +136,7 @@ targets.forEach((target) => {
   target.addEventListener("dblclick", targetOnDoubleClick);
 
   target.addEventListener("pointerdown", (e) => {
+    console.log(`Down! ${e}`);
     if (followingTarget) {
       return;
     }
@@ -145,17 +146,7 @@ targets.forEach((target) => {
       abort();
       return;
     }
-    if (e.pointerType == "touch") {
-      if (e.isPrimary) {
-        scalingTimestamp = e.timeStamp;
-      } else {
-        const gap = e.timeStamp - scalingTimestamp;
-        if (gap < toScalingTolerance) {
-          console.log("Scaling Mode");
-        }
-        scalingTimestamp = null;
-      }
-    }
+    checkToScalingMode(e);
     longPress(e);
   });
 
@@ -251,6 +242,20 @@ function targetOnDoubleClick(e) {
   backup.left = e.target.style.left;
   backup.width = e.target.style.width;
   backup.height = e.target.style.height;
+}
+
+function checkToScalingMode(e) {
+  if (e.pointerType == "touch") {
+    if (e.isPrimary) {
+      scalingTimestamp = e.timeStamp;
+    } else {
+      const gap = e.timeStamp - scalingTimestamp;
+      if (gap < toScalingTolerance) {
+        console.log("Scaling Mode");
+      }
+      scalingTimestamp = null;
+    }
+  }
 }
 
 function abort() {
