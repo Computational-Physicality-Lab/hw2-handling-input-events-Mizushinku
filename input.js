@@ -58,7 +58,6 @@ workspace.addEventListener("pointerdown", (e) => {
   if (followingTarget && e.pointerType == "touch") {
     if (e.isPrimary) {
       const [x, y] = checkPos(workspace, followingTarget, e);
-      console.log(x, y);
       followingTarget.style.left = `${x}px`;
       followingTarget.style.top = `${y}px`;
     } else {
@@ -122,27 +121,6 @@ workspace.addEventListener("pointermove", (e) => {
     handleScaling(e);
   }
 });
-
-function checkPos(parent, child, e) {
-  const parentRect = parent.getBoundingClientRect();
-  const childRect = child.getBoundingClientRect();
-
-  let x = e.clientX - childRect.width / 2;
-  let y = e.clientY - childRect.height / 2;
-
-  x = Math.max(
-    parentRect.left,
-    Math.min(parentRect.right - childRect.width, x)
-  );
-  y = Math.max(
-    parentRect.top,
-    Math.min(parentRect.bottom - childRect.height, y)
-  );
-  x += childRect.width / 2;
-  y += childRect.height / 2;
-
-  return [x, y];
-}
 
 /*********************************/
 /******* Targets Code Zone *******/
@@ -283,15 +261,46 @@ function handleScaling(e) {
   const curDiffX = Math.abs(anchors[0].clientX - anchors[1].clientX);
   const curDiffY = Math.abs(anchors[0].clientY - anchors[1].clientY);
   if (curDiffX > curDiffY) {
-    console.log("<-----> scaling on X-axis.");
+    if (curDiffX > prevDiffX) {
+      console.log("Scaling Up X...");
+    } else {
+      console.log("Scaling Down X...");
+    }
   } else {
-    console.log("^-----ˇ scaling on Y-axis.");
+    if (curDiffY > prevDiffX) {
+      console.log("Scaling Up Y...");
+    } else {
+      console.log("Scaling Down Y...");
+    }
   }
+  prevDiffX = curDiffX;
+  prevDiffY = curDiffY;
 }
 
 function removeAnchor(e) {
   const index = anchors.findIndex((anchor) => anchor.pointerId === e.pointerId);
   anchors.splice(index, 1);
+}
+
+function checkPos(parent, child, e) {
+  const parentRect = parent.getBoundingClientRect();
+  const childRect = child.getBoundingClientRect();
+
+  let x = e.clientX - childRect.width / 2;
+  let y = e.clientY - childRect.height / 2;
+
+  x = Math.max(
+    parentRect.left,
+    Math.min(parentRect.right - childRect.width, x)
+  );
+  y = Math.max(
+    parentRect.top,
+    Math.min(parentRect.bottom - childRect.height, y)
+  );
+  x += childRect.width / 2;
+  y += childRect.height / 2;
+
+  return [x, y];
 }
 
 function abort() {
@@ -310,7 +319,7 @@ function abort() {
   } else if (isScaling) {
     console.log("Abort Scaling");
     isScaling = false;
-    anchors.clear();
+    anchors = [];
     prevDiffX = -1;
     prevDiffY = -1;
   }
